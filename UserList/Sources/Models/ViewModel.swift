@@ -16,9 +16,9 @@ class ViewModel: ObservableObject {
     private let repository = UserListRepository()
     
     // TODO: - Should be a viewModel's input
-    func fetchUsers() {
+    @MainActor
+    func fetchUsers() async {
         isLoading = true
-        Task {
             do {
                 let users = try await repository.fetchUsers(quantity: 20)
                 self.users.append(contentsOf: users)
@@ -26,7 +26,6 @@ class ViewModel: ObservableObject {
             } catch {
                 print("Error fetching users: \(error.localizedDescription)")
             }
-        }
     }
 
     // TODO: - Should be an OutPut
@@ -38,6 +37,8 @@ class ViewModel: ObservableObject {
     // TODO: - Should be a viewModel's input
     func reloadUsers() {
         users.removeAll()
-        fetchUsers()
+        Task {
+            await fetchUsers()
+        }
     }
 }

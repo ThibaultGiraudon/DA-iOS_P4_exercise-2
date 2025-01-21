@@ -22,7 +22,9 @@ struct UserListView: View {
                         }
                         .onAppear {
                             if vm.shouldLoadMoreData(currentItem: user) {
-                                vm.fetchUsers()
+                                Task {
+                                    await vm.fetchUsers()
+                                }
                             }
                         }
                     }
@@ -41,7 +43,9 @@ struct UserListView: View {
                                 }
                                 .onAppear {
                                     if vm.shouldLoadMoreData(currentItem: user) {
-                                        vm.fetchUsers()
+                                        Task {
+                                            await vm.fetchUsers()
+                                        }
                                     }
                                 }
                             }
@@ -73,7 +77,9 @@ struct UserListView: View {
             }
         }
         .onAppear {
-            vm.fetchUsers()
+            Task {
+                await vm.fetchUsers()
+            }
         }
     }
 }
