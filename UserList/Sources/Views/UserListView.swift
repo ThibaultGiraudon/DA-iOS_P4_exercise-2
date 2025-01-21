@@ -1,19 +1,21 @@
 import SwiftUI
 
 struct UserListView: View {
-    // TODO: - Those properties should be viewModel's OutPuts
-    @State private var users: [User] = []
-    @State private var isLoading = false
-    @State private var isGridView = false
-
-    // TODO: - The property should be declared in the viewModel
-    private let repository = UserListRepository()
+//    // TODO: - Those properties should be viewModel's OutPuts
+//    @State private var users: [User] = []
+//    @State private var isLoading = false
+//    @State private var isGridView = false
+//
+//    // TODO: - The property should be declared in the viewModel
+//    private let repository = UserListRepository()
+    
+    @ObservedObject var vm = ViewModel()
     
     var body: some View {
         NavigationView {
             Group {
-                if !isGridView {
-                    List(users) { user in
+                if !vm.isGridView {
+                    List(vm.users) { user in
                         NavigationLink(destination: UserDetailView(user: user)) {
                             HStack {
                                 ImageView(user: user, size: 50)
@@ -27,15 +29,15 @@ struct UserListView: View {
                             }
                         }
                         .onAppear {
-                            if self.shouldLoadMoreData(currentItem: user) {
-                                self.fetchUsers()
+                            if vm.shouldLoadMoreData(currentItem: user) {
+                                vm.fetchUsers()
                             }
                         }
                     }
                 } else {
                     ScrollView {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
-                            ForEach(users) { user in
+                            ForEach(vm.users) { user in
                                 NavigationLink(destination: UserDetailView(user: user)) {
                                     VStack {
                                         ImageView(user: user, size: 150)
@@ -46,8 +48,8 @@ struct UserListView: View {
                                     }
                                 }
                                 .onAppear {
-                                    if self.shouldLoadMoreData(currentItem: user) {
-                                        self.fetchUsers()
+                                    if vm.shouldLoadMoreData(currentItem: user) {
+                                        vm.fetchUsers()
                                     }
                                 }
                             }
@@ -58,7 +60,7 @@ struct UserListView: View {
             .navigationTitle("Users")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Picker(selection: $isGridView, label: Text("Display")) {
+                    Picker(selection: $vm.isGridView, label: Text("Display")) {
                         Image(systemName: "rectangle.grid.1x2.fill")
                             .tag(true)
                             .accessibilityLabel(Text("Grid view"))
@@ -70,7 +72,7 @@ struct UserListView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        self.reloadUsers()
+                        vm.reloadUsers()
                     }) {
                         Image(systemName: "arrow.clockwise")
                             .imageScale(.large)
@@ -79,35 +81,35 @@ struct UserListView: View {
             }
         }
         .onAppear {
-            self.fetchUsers()
+            vm.fetchUsers()
         }
     }
 
     // TODO: - Should be a viewModel's input
-    private func fetchUsers() {
-        isLoading = true
-        Task {
-            do {
-                let users = try await repository.fetchUsers(quantity: 20)
-                self.users.append(contentsOf: users)
-                isLoading = false
-            } catch {
-                print("Error fetching users: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    // TODO: - Should be an OutPut
-    private func shouldLoadMoreData(currentItem item: User) -> Bool {
-        guard let lastItem = users.last else { return false }
-        return !isLoading && item.id == lastItem.id
-    }
-
-    // TODO: - Should be a viewModel's input
-    private func reloadUsers() {
-        users.removeAll()
-        fetchUsers()
-    }
+//    private func fetchUsers() {
+//        isLoading = true
+//        Task {
+//            do {
+//                let users = try await repository.fetchUsers(quantity: 20)
+//                self.users.append(contentsOf: users)
+//                isLoading = false
+//            } catch {
+//                print("Error fetching users: \(error.localizedDescription)")
+//            }
+//        }
+//    }
+//
+//    // TODO: - Should be an OutPut
+//    private func shouldLoadMoreData(currentItem item: User) -> Bool {
+//        guard let lastItem = users.last else { return false }
+//        return !isLoading && item.id == lastItem.id
+//    }
+//
+//    // TODO: - Should be a viewModel's input
+//    private func reloadUsers() {
+//        users.removeAll()
+//        fetchUsers()
+//    }
 }
 
 struct UserListView_Previews: PreviewProvider {
