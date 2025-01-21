@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "A7B35344-92E2-41BB-A5E2-05DA640F5268",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:UserList.xcodeproj",
+        "identifier" : "2FFB64332AC6D256007F2F80",
+        "name" : "UserListTests"
+      }
+    }
+  ],
+  "version" : 1
+}
