@@ -8,14 +8,20 @@
 import Foundation
 import SwiftUI
 
+
 class ViewModel: ObservableObject {
     @Published var users: [User] = []
     @Published var isLoading = false
     @Published var isGridView = false
     
-    private let repository = UserListRepository()
+    private var repository = UserListRepository()
     
-    // TODO: - Should be a viewModel's input
+    init(
+        executeDataRequest: @escaping (URLRequest) async throws -> (Data, URLResponse) = URLSession.shared.data(for:)
+    ) {
+        self.repository = UserListRepository(executeDataRequest: executeDataRequest)
+    }
+    
     @MainActor
     func fetchUsers() async {
         isLoading = true
@@ -28,17 +34,13 @@ class ViewModel: ObservableObject {
             }
     }
 
-    // TODO: - Should be an OutPut
     func shouldLoadMoreData(currentItem item: User) -> Bool {
         guard let lastItem = users.last else { return false }
         return !isLoading && item.id == lastItem.id
     }
 
-    // TODO: - Should be a viewModel's input
-    func reloadUsers() {
+    func reloadUsers() async {
         users.removeAll()
-        Task {
-            await fetchUsers()
-        }
+        await fetchUsers()
     }
 }

@@ -68,7 +68,9 @@ struct UserListView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        vm.reloadUsers()
+                        Task {
+                            await vm.reloadUsers()
+                        }
                     }) {
                         Image(systemName: "arrow.clockwise")
                             .imageScale(.large)
